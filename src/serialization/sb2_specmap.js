@@ -543,6 +543,22 @@ const specMap = {
             }
         ]
     },
+    //TODO: Change NOTE for CHORD
+    'noteOn:duration:elapsed:from:': {
+        opcode: 'music_playChordForBeats',
+        argMap: [
+            {
+                type: 'input',
+                inputOp: 'note',
+                inputName: 'NOTE'
+            },
+            {
+                type: 'input',
+                inputOp: 'math_number',
+                inputName: 'BEATS'
+            }
+        ]
+    },
     'instrument:': {
         opcode: 'music_setInstrument',
         argMap: [
