@@ -1015,7 +1015,7 @@ class Scratch3MusicBlocks {
      * @param {beats} beats - the duration in beats to pause after playing the sound.
      * @param {object} util - utility object provided by the runtime.
      */
-    _playDrumForBeats(drumNum, beats, util) {
+    _playDrumForBeats (drumNum, beats, util) {
         if (this._stackTimerNeedsInit(util)) {
             drumNum = Cast.toNumber(drumNum);
             drumNum = Math.round(drumNum);
@@ -1036,7 +1036,7 @@ class Scratch3MusicBlocks {
      * @param {number} drumNum - the number of the drum to play.
      * @private
      */
-    _playDrumNum(util, drumNum) {
+    _playDrumNum (util, drumNum) {
         if (util.runtime.audioEngine === null) return;
         if (util.target.sprite.soundBank === null) return;
         // If we're playing too many sounds, do not play the drum sound.
@@ -1068,7 +1068,7 @@ class Scratch3MusicBlocks {
 
         player.play();
         // Connect the player to the gain node.
-        player.connect({getInputNode() {
+        player.connect({getInputNode () {
             return volumeGain;
         }});
     }
@@ -1079,7 +1079,7 @@ class Scratch3MusicBlocks {
      * @param {object} util - utility object provided by the runtime.
      * @property {number} BEATS - the duration in beats of the rest.
      */
-    restForBeats(args, util) {
+    restForBeats (args, util) {
         if (this._stackTimerNeedsInit(util)) {
             let beats = Cast.toNumber(args.BEATS);
             beats = this._clampBeats(beats);
@@ -1097,7 +1097,7 @@ class Scratch3MusicBlocks {
      * @property {number} NOTE - the pitch of the note to play, interpreted as a MIDI note number.
      * @property {number} BEATS - the duration in beats of the note.
      */
-    playNoteForBeats(args, util) {
+    playNoteForBeats (args, util) {
         if (this._stackTimerNeedsInit(util)) {
             let note = Cast.toNumber(args.NOTE);
             note = MathUtil.clamp(note,
@@ -1126,7 +1126,7 @@ class Scratch3MusicBlocks {
      * @property {number} NOTE - the pitch of the note to play, interpreted as a MIDI note number.
      * @property {number} BEATS - the duration in beats of the note.
      */
-    playChordForBeats(args, util) {
+    playChordForBeats (args, util) {
         if (this._stackTimerNeedsInit(util)) {
             let note = Cast.toNumber(args.NOTE);
             note = MathUtil.clamp(note,
@@ -1149,7 +1149,7 @@ class Scratch3MusicBlocks {
         }
     }
 
-    _playNoteForPicker(noteNum, category) {
+    _playNoteForPicker (noteNum, category) {
         if (category !== this.getInfo().name) return;
         const util = {
             runtime: this.runtime,
@@ -1235,11 +1235,9 @@ class Scratch3MusicBlocks {
         // Start playing the note
         player.play();
         // Connect the player to the gain node.
-        player.connect({
-            getInputNode() {
-                return volumeGain;
-            }
-        });
+        player.connect({getInputNode () {
+            return volumeGain;
+        }});
         // Set playback now after play creates the outputNode.
         player.outputNode.playbackRate.value = notePitchInterval;
         // Schedule playback to stop.
@@ -1255,7 +1253,7 @@ class Scratch3MusicBlocks {
      * @return {index} the index of the selected sample in the samples array.
      * @private
      */
-    _selectSampleIndexForNote(note, samples) {
+    _selectSampleIndexForNote (note, samples) {
         // Step backwards through the array of samples, i.e. in descending pitch, in order to find
         // the sample that is the closest one below (or matching) the pitch of the input note.
         for (let i = samples.length - 1; i >= 0; i--) {
@@ -1272,7 +1270,7 @@ class Scratch3MusicBlocks {
      * @return {number} a ratio corresponding to the input interval.
      * @private
      */
-    _ratioForPitchInterval(interval) {
+    _ratioForPitchInterval (interval) {
         return Math.pow(2, (interval / 12));
     }
 
@@ -1282,7 +1280,7 @@ class Scratch3MusicBlocks {
      * @return {number} - the clamped duration.
      * @private
      */
-    _clampBeats(beats) {
+    _clampBeats (beats) {
         return MathUtil.clamp(beats, Scratch3MusicBlocks.BEAT_RANGE.min, Scratch3MusicBlocks.BEAT_RANGE.max);
     }
 
@@ -1292,7 +1290,7 @@ class Scratch3MusicBlocks {
      * @return {number} seconds - number of seconds `beats` will last.
      * @private
      */
-    _beatsToSec(beats) {
+    _beatsToSec (beats) {
         return (60 / this.getTempo()) * beats;
     }
 
@@ -1302,7 +1300,7 @@ class Scratch3MusicBlocks {
      * @return {boolean} - true if the stack timer needs to be initialized.
      * @private
      */
-    _stackTimerNeedsInit(util) {
+    _stackTimerNeedsInit (util) {
         return !util.stackFrame.timer;
     }
 
@@ -1312,7 +1310,7 @@ class Scratch3MusicBlocks {
      * @param {number} duration - a duration in seconds to set the timer for.
      * @private
      */
-    _startStackTimer(util, duration) {
+    _startStackTimer (util, duration) {
         util.stackFrame.timer = new Timer();
         util.stackFrame.timer.start();
         util.stackFrame.duration = duration;
@@ -1324,7 +1322,7 @@ class Scratch3MusicBlocks {
      * @param {object} util - utility object provided by the runtime.
      * @private
      */
-    _checkStackTimer(util) {
+    _checkStackTimer (util) {
         const timeElapsed = util.stackFrame.timer.timeElapsed();
         if (timeElapsed < util.stackFrame.duration * 1000) {
             util.yield();
@@ -1337,7 +1335,7 @@ class Scratch3MusicBlocks {
      * @param {object} util - utility object provided by the runtime.
      * @property {int} INSTRUMENT - the number of the instrument to select.
      */
-    setInstrument(args, util) {
+    setInstrument (args, util) {
         this._setInstrument(args.INSTRUMENT, util, false);
     }
 
@@ -1348,7 +1346,7 @@ class Scratch3MusicBlocks {
      * @param {object} util - utility object provided by the runtime.
      * @property {int} INSTRUMENT - the MIDI number of the instrument to select.
      */
-    midiSetInstrument(args, util) {
+    midiSetInstrument (args, util) {
         this._setInstrument(args.INSTRUMENT, util, true);
     }
 
@@ -1359,7 +1357,7 @@ class Scratch3MusicBlocks {
      * @param {object} util - utility object provided by the runtime.
      * @param {boolean} mapMidi - whether or not instNum is a MIDI instrument number.
      */
-    _setInstrument(instNum, util, mapMidi) {
+    _setInstrument (instNum, util, mapMidi) {
         const musicState = this._getMusicState(util.target);
         instNum = Cast.toNumber(instNum);
         instNum = Math.round(instNum);
@@ -1376,7 +1374,7 @@ class Scratch3MusicBlocks {
      * @param {object} args - the block arguments.
      * @property {number} TEMPO - the tempo, in beats per minute.
      */
-    setTempo(args) {
+    setTempo (args) {
         const tempo = Cast.toNumber(args.TEMPO);
         this._updateTempo(tempo);
     }
@@ -1386,7 +1384,7 @@ class Scratch3MusicBlocks {
      * @param {object} args - the block arguments.
      * @property {number} TEMPO - the amount to change the tempo, in beats per minute.
      */
-    changeTempo(args) {
+    changeTempo (args) {
         const change = Cast.toNumber(args.TEMPO);
         const tempo = change + this.getTempo();
         this._updateTempo(tempo);
@@ -1397,7 +1395,7 @@ class Scratch3MusicBlocks {
      * @param {number} tempo - the tempo to set, in beats per minute.
      * @private
      */
-    _updateTempo(tempo) {
+    _updateTempo (tempo) {
         tempo = MathUtil.clamp(tempo, Scratch3MusicBlocks.TEMPO_RANGE.min, Scratch3MusicBlocks.TEMPO_RANGE.max);
         const stage = this.runtime.getTargetForStage();
         if (stage) {
@@ -1409,7 +1407,7 @@ class Scratch3MusicBlocks {
      * Get the current tempo.
      * @return {number} - the current tempo, in beats per minute.
      */
-    getTempo() {
+    getTempo () {
         const stage = this.runtime.getTargetForStage();
         if (stage) {
             return stage.tempo;
