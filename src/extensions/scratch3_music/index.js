@@ -539,6 +539,32 @@ class Scratch3MusicBlocks {
     }
 
     /**
+     * An array of info about each chord.
+     * @type {object[]}
+     * @param {string} name - the translatable name to display in the drums menu.
+     */
+    get CHORD_INFO() {
+        return [
+            {
+                name: formatMessage({
+                    id: 'music.chordMajor',
+                    default: '(1) Major',
+                    description: 'Major chord'
+                }),
+                notes: [0, 4, 7]
+            },
+            {
+                name: formatMessage({
+                    id: 'music.chordMinor',
+                    default: '(2) Minor',
+                    description: 'Minor chord'
+                }),
+                notes: [0, 3, 7]
+            }
+        ];
+    }
+
+    /**
      * An array that is a mapping from MIDI instrument numbers to Scratch instrument numbers.
      * @type {number[]}
      */
@@ -843,13 +869,18 @@ class Scratch3MusicBlocks {
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
                         id: 'music.playChordForBeats',
-                        default: 'play chord [NOTE] for [BEATS] beats',
+                        default: 'play chord [NOTE] [CHORD] for [BEATS] beats',
                         description: 'play a chord for a number of beats'
                     }),
                     arguments: {
                         NOTE: {
                             type: ArgumentType.NOTE,
                             defaultValue: 60
+                        },
+                        CHORD: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'CHORD',
+                            defaultValue: 1
                         },
                         BEATS: {
                             type: ArgumentType.NUMBER,
@@ -937,6 +968,10 @@ class Scratch3MusicBlocks {
                 INSTRUMENT: {
                     acceptReporters: true,
                     items: this._buildMenu(this.INSTRUMENT_INFO)
+                },
+                CHORD: {
+                    acceptReporters: true,
+                    items: this._buildMenu(this.CHORD_INFO)
                 }
             }
         };
@@ -1105,9 +1140,9 @@ class Scratch3MusicBlocks {
 
             const durationSec = this._beatsToSec(beats);
 
-            this._playNote(util, note, durationSec);
-            this._playNote(util, note + 4, durationSec);
-            this._playNote(util, note + 7, durationSec);
+            this.CHORD_INFO[args.CHORD - 1].notes.forEach(n => {
+                this._playNote(util, note + n, durationSec);
+            })
 
             this._startStackTimer(util, durationSec);
         } else {
