@@ -37,7 +37,7 @@ const menuIconURI = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iM
  * @constructor
  */
 class Scratch3MusicBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -93,7 +93,7 @@ class Scratch3MusicBlocks {
     /**
      * Decode the full set of drum and instrument sounds, and store the audio buffers in arrays.
      */
-    _loadAllSounds() {
+    _loadAllSounds () {
         const loadingPromises = [];
         this.DRUM_INFO.forEach((drumInfo, index) => {
             const filePath = `drums/${drumInfo.fileName}`;
@@ -121,7 +121,7 @@ class Scratch3MusicBlocks {
      * @param {array} playerArray - the array of players in which to store it.
      * @return {Promise} - a promise which will resolve once the sound has been stored.
      */
-    _storeSound(filePath, index, playerArray) {
+    _storeSound (filePath, index, playerArray) {
         const fullPath = `${filePath}.mp3`;
 
         if (!assetData[fullPath]) return;
@@ -139,7 +139,7 @@ class Scratch3MusicBlocks {
      * @param  {ArrayBuffer} soundBuffer - a buffer containing the encoded audio.
      * @return {Promise} - a promise which will resolve once the sound has decoded.
      */
-    _decodeSound(soundBuffer) {
+    _decodeSound (soundBuffer) {
         const engine = this.runtime.audioEngine;
 
         if (!engine) {
@@ -147,7 +147,7 @@ class Scratch3MusicBlocks {
         }
 
         // Check for newer promise-based API
-        return engine.decodeSoundPlayer({ data: { buffer: soundBuffer } });
+        return engine.decodeSoundPlayer({data: {buffer: soundBuffer}});
     }
 
     /**
@@ -157,7 +157,7 @@ class Scratch3MusicBlocks {
      * @return {array} - An array of objects with text and value properties.
      * @private
      */
-    _buildMenu(info) {
+    _buildMenu (info) {
         return info.map((entry, index) => {
             const obj = {};
             obj.text = entry.name;
@@ -172,7 +172,7 @@ class Scratch3MusicBlocks {
      * @param {string} name - the translatable name to display in the drums menu.
      * @param {string} fileName - the name of the audio file containing the drum sound.
      */
-    get DRUM_INFO() {
+    get DRUM_INFO () {
         return [
             {
                 name: formatMessage({
@@ -330,7 +330,7 @@ class Scratch3MusicBlocks {
      * @param {number[]} samples - an array of numbers representing the MIDI note number for each
      *                           sampled sound used to play this instrument.
      */
-    get INSTRUMENT_INFO() {
+    get INSTRUMENT_INFO () {
         return [
             {
                 name: formatMessage({
@@ -541,9 +541,10 @@ class Scratch3MusicBlocks {
     /**
      * An array of info about each chord.
      * @type {object[]}
-     * @param {string} name - the translatable name to display in the drums menu.
+     * @param {string} name - the translatable name to display in the chords menu.
+     * @param {int[]} notes - the notes of the chord.
      */
-    get CHORD_INFO() {
+    get CHORD_INFO () {
         return [
             {
                 name: formatMessage({
@@ -568,7 +569,7 @@ class Scratch3MusicBlocks {
      * An array that is a mapping from MIDI instrument numbers to Scratch instrument numbers.
      * @type {number[]}
      */
-    get MIDI_INSTRUMENTS() {
+    get MIDI_INSTRUMENTS () {
         return [
             // Acoustic Grand, Bright Acoustic, Electric Grand, Honky-Tonk
             1, 1, 1, 1,
@@ -643,7 +644,7 @@ class Scratch3MusicBlocks {
      * The pitch and decay properties are not currently being used.
      * @type {Array[]}
      */
-    get MIDI_DRUMS() {
+    get MIDI_DRUMS () {
         return [
             [1, -4], // "BassDrum" in 2.0, "Bass Drum" in 3.0 (which was "Tom" in 2.0)
             [1, 0], // Same as just above
@@ -699,7 +700,7 @@ class Scratch3MusicBlocks {
      * The key to load & store a target's music-related state.
      * @type {string}
      */
-    static get STATE_KEY() {
+    static get STATE_KEY () {
         return 'Scratch.music';
     }
 
@@ -707,7 +708,7 @@ class Scratch3MusicBlocks {
      * The default music-related state, to be used when a target has no existing music state.
      * @type {MusicState}
      */
-    static get DEFAULT_MUSIC_STATE() {
+    static get DEFAULT_MUSIC_STATE () {
         return {
             currentInstrument: 0
         };
@@ -717,8 +718,8 @@ class Scratch3MusicBlocks {
      * The minimum and maximum MIDI note numbers, for clamping the input to play note.
      * @type {{min: number, max: number}}
      */
-    static get MIDI_NOTE_RANGE() {
-        return { min: 0, max: 130 };
+    static get MIDI_NOTE_RANGE () {
+        return {min: 0, max: 130};
     }
 
     /**
@@ -726,22 +727,22 @@ class Scratch3MusicBlocks {
      * 100 beats at the default tempo of 60bpm is 100 seconds.
      * @type {{min: number, max: number}}
      */
-    static get BEAT_RANGE() {
-        return { min: 0, max: 100 };
+    static get BEAT_RANGE () {
+        return {min: 0, max: 100};
     }
 
     /** The minimum and maximum tempo values, in bpm.
      * @type {{min: number, max: number}}
      */
-    static get TEMPO_RANGE() {
-        return { min: 20, max: 500 };
+    static get TEMPO_RANGE () {
+        return {min: 20, max: 500};
     }
 
     /**
      * The maximum number of sounds to allow to play simultaneously.
      * @type {number}
      */
-    static get CONCURRENCY_LIMIT() {
+    static get CONCURRENCY_LIMIT () {
         return 30;
     }
 
@@ -750,7 +751,7 @@ class Scratch3MusicBlocks {
      * @returns {MusicState} the mutable music state associated with that target. This will be created if necessary.
      * @private
      */
-    _getMusicState(target) {
+    _getMusicState (target) {
         let musicState = target.getCustomState(Scratch3MusicBlocks.STATE_KEY);
         if (!musicState) {
             musicState = Clone.simple(Scratch3MusicBlocks.DEFAULT_MUSIC_STATE);
@@ -766,7 +767,7 @@ class Scratch3MusicBlocks {
      * @listens Runtime#event:targetWasCreated
      * @private
      */
-    _onTargetCreated(newTarget, sourceTarget) {
+    _onTargetCreated (newTarget, sourceTarget) {
         if (sourceTarget) {
             const musicState = sourceTarget.getCustomState(Scratch3MusicBlocks.STATE_KEY);
             if (musicState) {
@@ -778,7 +779,7 @@ class Scratch3MusicBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'music',
             name: formatMessage({
@@ -984,7 +985,7 @@ class Scratch3MusicBlocks {
      * @property {int} DRUM - the number of the drum to play.
      * @property {number} BEATS - the duration in beats of the drum sound.
      */
-    playDrumForBeats(args, util) {
+    playDrumForBeats (args, util) {
         this._playDrumForBeats(args.DRUM, args.BEATS, util);
     }
 
@@ -995,7 +996,7 @@ class Scratch3MusicBlocks {
      * @param {object} args - the block arguments.
      * @param {object} util - utility object provided by the runtime.
      */
-    midiPlayDrumForBeats(args, util) {
+    midiPlayDrumForBeats (args, util) {
         let drumNum = Cast.toNumber(args.DRUM);
         drumNum = Math.round(drumNum);
         const midiDescription = this.MIDI_DRUMS[drumNum - 35];
@@ -1067,11 +1068,9 @@ class Scratch3MusicBlocks {
 
         player.play();
         // Connect the player to the gain node.
-        player.connect({
-            getInputNode() {
-                return volumeGain;
-            }
-        });
+        player.connect({getInputNode() {
+            return volumeGain;
+        }});
     }
 
     /**
